@@ -1,0 +1,30 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="d-flex align-items-center justify-content-center" 
+     style="height: 100vh; width: 100vw; background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.8) 100%), url('https://assets.nflxext.com/ffe/siteui/vlv3/93da5c27-be66-427c-8b72-5cb39d275279/94eb5ad7-10d8-4cca-bf45-ac52e0a052c0/US-en-20240226-popsignuptwoweeks-perspective_alpha_website_large.jpg'); background-size: cover; background-position: center; position: absolute; top: 0; left: 0; z-index: -1;">
+</div>
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5 col-lg-4">
+        <div class="card bg-black bg-opacity-75 text-white p-4" style="border-radius: 10px;">
+            <div class="card-body">
+                <h2 class="card-title fw-bold mb-4">Sign Up</h2>
+                <form action="/register" method="POST" class="validated-form" novalidate>
+                    <div class="mb-3">
+                        <input type="email" class="form-control form-control-lg bg-dark border-secondary text-white" id="email" name="email" placeholder="Email Address" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control form-control-lg bg-dark border-secondary text-white" id="username" name="username" placeholder="Create a Username" required>
+                    </div>
+                    <div class="mb-4">
+                        <input type="password" class="form-control form-control-lg bg-dark border-secondary text-white" id="password" name="password" placeholder="Create a Password" required>
+                    </div>
+                    <button class="btn btn-danger btn-lg w-100 fw-bold mt-2">Sign Up</button>
+                </form>
+                <div class="mt-4 text-muted">
+                    Already have an account? <a href="/login" class="text-white text-decoration-none fw-bold">Sign in here.</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

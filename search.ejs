@@ -1,0 +1,54 @@
+<% layout('layouts/boilerplate') %>
+
+<section class="search-page">
+    <div class="search-shell">
+        <div class="search-hero-card">
+            <div class="search-hero-copy">
+                <div class="search-eyebrow">Discover Faster</div>
+                <h1 class="page-title">Search the CineVerse library</h1>
+                <p class="search-summary">
+                    <% if (query) { %>
+                        <strong><%= resultCount %></strong> result(s) for "<%= query %>"
+                    <% } else { %>
+                        Search by title, actor, director, category, genre, or format.
+                    <% } %>
+                </p>
+            </div>
+            <form action="/search" method="GET" class="search-page-form">
+                <input class="search-page-input" type="search" name="q" value="<%= query %>" placeholder="Try Aamir Khan, thriller, K-drama, or Christopher Nolan">
+                <button class="search-page-button" type="submit">Search</button>
+            </form>
+        </div>
+
+        <% if (movies && movies.length > 0) { %>
+            <div class="search-grid">
+                <% movies.forEach(movie => { %>
+                    <a href="/movies/<%= movie._id %>" class="search-card">
+                        <img
+                            src="<%= movie.poster || movie.image %>"
+                            data-fallback="<%= movie.image || movie.poster %>"
+                            onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; }"
+                            alt="<%= movie.title %>"
+                            class="search-poster"
+                        >
+                        <div class="search-card-body">
+                            <div class="search-chip-row">
+                                <span class="search-chip"><%= movie.type %></span>
+                                <span class="search-chip"><%= movie.library %></span>
+                            </div>
+                            <h2 class="search-title"><%= movie.title %></h2>
+                            <p class="search-line"><%= movie.genre %> | <%= movie.year %> | IMDb <%= movie.imdbRating %></p>
+                            <p class="search-line">Director: <%= movie.director %></p>
+                            <p class="search-line">Cast: <%= movie.cast.slice(0, 3).join(', ') %></p>
+                        </div>
+                    </a>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="empty-state">
+                <h2>No results found</h2>
+                <p>Try searching for a movie name, star, director, Bollywood release, or TV series.</p>
+            </div>
+        <% } %>
+    </div>
+</section>

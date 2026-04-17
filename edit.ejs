@@ -1,0 +1,49 @@
+<% layout('layouts/boilerplate') %>
+<section id="add-movie-page">
+    <h1 class="page-title">Edit Movie</h1>
+    <div class="form-container">
+        <form action="/movies/<%= movie._id %>?_method=PUT" method="POST" novalidate class="validated-form">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="movie[title]" value="<%= movie.title %>" required>
+            </div>
+            <div class="form-group">
+                <label for="year">Year</label>
+                <input type="number" id="year" name="movie[year]" value="<%= movie.year %>" required>
+            </div>
+            <div class="form-group">
+                <label for="type">Format</label>
+                <input type="text" id="type" name="movie[type]" value="<%= movie.type || 'Movie' %>" required>
+            </div>
+            <div class="form-group">
+                <label for="library">Category</label>
+                <input type="text" id="library" name="movie[library]" value="<%= movie.library || 'Hollywood' %>" required>
+            </div>
+            <div class="form-group">
+                <label for="genre">Genre</label>
+                <input type="text" id="genre" name="movie[genre]" value="<%= movie.genre %>" required>
+            </div>
+            <div class="form-group">
+                <label for="director">Director</label>
+                <input type="text" id="director" name="movie[director]" value="<%= movie.director || '' %>" required>
+            </div>
+            <div class="form-group">
+                <label for="cast">Cast</label>
+                <input type="text" id="cast" name="movie[cast]" value="<%= movie.cast && movie.cast.length ? movie.cast.join(', ') : '' %>" required>
+            </div>
+            <div class="form-group">
+                <label for="poster-url">Poster URL</label>
+                <input type="url" id="poster-url" name="movie[poster]" value="<%= movie.poster || movie.image %>" placeholder="https://example.com/poster.jpg">
+            </div>
+            <div class="form-group">
+                <label for="imdb-rating">IMDB Rating</label>
+                <input type="number" id="imdb-rating" name="movie[imdbRating]" value="<%= movie.imdbRating %>" min="0" max="10" step="0.1" required>
+            </div>
+            <div class="form-group">
+                 <label for="description">Description</label>
+                 <textarea id="description" name="movie[description]" rows="4" required><%= movie.description %></textarea>
+            </div>
+            <button class="btn btn-blue" style="width: 100%;">Save Changes</button>
+        </form>
+    </div>
+</section>

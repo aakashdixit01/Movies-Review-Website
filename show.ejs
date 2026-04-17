@@ -1,0 +1,143 @@
+<% layout('layouts/boilerplate') %>
+
+<%
+    const starRating = Math.round((movie.imdbRating || 0) / 2);
+    const castList = Array.isArray(movie.cast) && movie.cast.length
+        ? movie.cast
+        : ['Cast details coming soon'];
+    const posterUrl = movie.poster || movie.image;
+    const reviews = Array.isArray(movie.reviews) ? [...movie.reviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) : [];
+%>
+
+<section class="movie-detail-page">
+    <div class="movie-detail-shell">
+        <div class="movie-poster-panel">
+            <img
+                src="<%= posterUrl %>"
+                data-fallback="<%= movie.image || movie.poster %>"
+                onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; }"
+                alt="<%= movie.title %>"
+                class="movie-detail-poster"
+            >
+        </div>
+
+        <aside class="movie-info-panel">
+            <div class="movie-meta-kicker"><%= movie.type || 'Movie' %> &bull; <%= movie.library || 'Hollywood' %> &bull; <%= movie.year %></div>
+            <h1 class="movie-detail-title"><%= movie.title %></h1>
+
+            <div class="movie-rating-row">
+                <div class="star-rating" aria-label="Rated <%= starRating %> out of 5 stars">
+                    <% for (let i = 1; i <= 5; i++) { %>
+                        <span class="<%= i <= starRating ? 'filled' : '' %>">&#9733;</span>
+                    <% } %>
+                </div>
+                <div class="rating-copy"><%= movie.imdbRating %>/10 IMDb</div>
+            </div>
+
+            <p class="movie-detail-description"><%= movie.description %></p>
+
+            <div class="movie-detail-grid">
+                <div class="detail-card">
+                    <div class="detail-label">Category</div>
+                    <div class="detail-value"><%= movie.library || 'Hollywood' %></div>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-label">Format</div>
+                    <div class="detail-value"><%= movie.type || 'Movie' %></div>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-label">IMDb Rating</div>
+                    <div class="detail-value"><%= movie.imdbRating %>/10</div>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-label">Genre</div>
+                    <div class="detail-value"><%= movie.genre %></div>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-label">Release Year</div>
+                    <div class="detail-value"><%= movie.year %></div>
+                </div>
+            </div>
+
+            <div class="detail-stack">
+                <section class="detail-feature-card">
+                    <div class="detail-feature-title">Director</div>
+                    <p class="detail-feature-copy"><%= movie.director || 'Director not listed' %></p>
+                </section>
+
+                <section class="detail-feature-card">
+                    <div class="detail-feature-title">Cast</div>
+                    <div class="cast-chip-list">
+                        <% castList.forEach(member => { %>
+                            <span class="cast-chip"><%= member %></span>
+                        <% }) %>
+                    </div>
+                </section>
+            </div>
+
+        </aside>
+    </div>
+</section>
+
+<section class="movie-reviews-section">
+    <div class="movie-reviews-shell">
+        <div class="reviews-header">
+            <div>
+                <div class="movie-meta-kicker">Community Reviews</div>
+                <h2 class="reviews-title">What viewers are saying</h2>
+            </div>
+            <div class="reviews-count"><%= reviews.length %> review<%= reviews.length === 1 ? '' : 's' %></div>
+        </div>
+
+        <% if (currentUser) { %>
+            <form action="/movies/<%= movie._id %>/reviews" method="POST" class="review-form">
+                <div class="review-form-row">
+                    <div class="form-group review-rating-group">
+                        <label for="review-rating">Your Rating</label>
+                        <select id="review-rating" name="review[rating]" required>
+                            <option value="">Choose</option>
+                            <option value="5">5 - Excellent</option>
+                            <option value="4">4 - Very Good</option>
+                            <option value="3">3 - Good</option>
+                            <option value="2">2 - Fair</option>
+                            <option value="1">1 - Poor</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="review-body">Your Review</label>
+                    <textarea id="review-body" name="review[body]" rows="4" placeholder="Share what you liked, what worked, or what did not." required></textarea>
+                </div>
+                <button class="btn btn-blue" type="submit">Post Review</button>
+            </form>
+        <% } else { %>
+            <div class="review-login-card">
+                <p class="mb-2">Log in to add your review for this title.</p>
+                <a href="/login" class="btn btn-blue">Login to Review</a>
+            </div>
+        <% } %>
+
+        <% if (reviews.length) { %>
+            <div class="reviews-list">
+                <% reviews.forEach(review => { %>
+                    <article class="review-card">
+                        <div class="review-card-header">
+                            <div>
+                                <div class="review-author"><%= review.author && review.author.username ? review.author.username : 'CineVerse User' %></div>
+                                <div class="review-date"><%= new Date(review.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></div>
+                            </div>
+                            <div class="review-stars" aria-label="Rated <%= review.rating %> out of 5 stars">
+                                <% for (let i = 1; i <= 5; i++) { %>
+                                    <span class="<%= i <= review.rating ? 'filled' : '' %>">&#9733;</span>
+                                <% } %>
+                            </div>
+                        </div>
+                        <p class="review-body"><%= review.body %></p>
+                    </article>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="review-empty-state">No reviews yet. Be the first user to share one.</div>
+        <% } %>
+    </div>
+</section>

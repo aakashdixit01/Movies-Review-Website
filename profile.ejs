@@ -1,0 +1,158 @@
+<% layout('layouts/boilerplate') %>
+
+<section class="profile-page">
+    <div class="profile-shell">
+        <div class="profile-grid">
+            <aside class="profile-summary-card">
+                <img src="<%= profile.profilePicture %>" alt="<%= profile.username %>" class="profile-avatar">
+                <div class="profile-kicker">CineVerse Profile</div>
+                <h1 class="profile-name"><%= profile.username %></h1>
+                <p class="profile-email"><%= profile.email %></p>
+                <p class="profile-bio"><%= profile.bio || 'Movie lover building a personal watch universe on CineVerse.' %></p>
+
+                <div class="profile-stats">
+                    <div class="profile-stat">
+                        <span class="profile-stat-value"><%= stats.reviews %></span>
+                        <span class="profile-stat-label">Reviews</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="profile-stat-value"><%= stats.averageRating || '-' %></span>
+                        <span class="profile-stat-label">Avg Rating</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="profile-stat-value"><%= stats.favorites %></span>
+                        <span class="profile-stat-label">Favorites</span>
+                    </div>
+                </div>
+
+                <div class="profile-info-list">
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Gender</span>
+                        <span class="profile-info-value"><%= profile.gender || 'Not added yet' %></span>
+                    </div>
+                    <div class="profile-info-item">
+                        <span class="profile-info-label">Age</span>
+                        <span class="profile-info-value"><%= profile.age || 'Not added yet' %></span>
+                    </div>
+                </div>
+
+                <div class="profile-chip-group">
+                    <% if (profile.favoriteGenres && profile.favoriteGenres.length) { %>
+                        <% profile.favoriteGenres.forEach(genre => { %>
+                            <span class="profile-chip"><%= genre %></span>
+                        <% }) %>
+                    <% } else { %>
+                        <span class="profile-chip muted">Favorite genres not added yet</span>
+                    <% } %>
+                </div>
+            </aside>
+
+            <div class="profile-content">
+                <section class="profile-card">
+                    <div class="profile-section-heading">
+                        <div>
+                            <div class="profile-kicker">Edit Profile</div>
+                            <h2 class="profile-section-title">Personal details and favorites</h2>
+                        </div>
+                    </div>
+
+                    <form action="/profile?_method=PUT" method="POST" class="profile-form">
+                        <div class="profile-form-grid">
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" value="<%= profile.email %>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="profilePicture">Profile Picture URL</label>
+                                <input type="url" id="profilePicture" name="profilePicture" value="<%= profile.profilePicture %>" placeholder="https://example.com/avatar.jpg">
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <input type="text" id="gender" name="gender" value="<%= profile.gender || '' %>" placeholder="e.g. Male, Female, Non-binary">
+                            </div>
+                            <div class="form-group">
+                                <label for="age">Age</label>
+                                <input type="number" id="age" name="age" min="0" value="<%= profile.age || '' %>" placeholder="e.g. 21">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="favoriteGenres">Favorite Genres</label>
+                            <input type="text" id="favoriteGenres" name="favoriteGenres" value="<%= profile.favoriteGenresText %>" placeholder="Action, Thriller, Romance">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="favoriteTitles">Favorite Movies or Series</label>
+                            <input type="text" id="favoriteTitles" name="favoriteTitles" value="<%= profile.favoriteTitlesText %>" placeholder="The Dark Knight, Interstellar, Dark">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bio">Bio</label>
+                            <textarea id="bio" name="bio" rows="4" placeholder="Say a little about your movie taste and watchlist vibe."><%= profile.bio || '' %></textarea>
+                        </div>
+
+                        <button class="btn btn-blue" type="submit">Save Profile</button>
+                    </form>
+                </section>
+
+                <section class="profile-card">
+                    <div class="profile-section-heading">
+                        <div>
+                            <div class="profile-kicker">Favorites</div>
+                            <h2 class="profile-section-title">Top picks</h2>
+                        </div>
+                    </div>
+
+                    <% if (profile.favoriteTitles && profile.favoriteTitles.length) { %>
+                        <div class="favorite-list">
+                            <% profile.favoriteTitles.forEach(title => { %>
+                                <div class="favorite-item"><%= title %></div>
+                            <% }) %>
+                        </div>
+                    <% } else { %>
+                        <p class="profile-empty-copy">Add your favorite movies or series to make this space feel like yours.</p>
+                    <% } %>
+                </section>
+
+                <section class="profile-card">
+                    <div class="profile-section-heading">
+                        <div>
+                            <div class="profile-kicker">Review History</div>
+                            <h2 class="profile-section-title">Reviews on movies and series</h2>
+                        </div>
+                    </div>
+
+                    <% if (reviewEntries.length) { %>
+                        <div class="profile-review-list">
+                            <% reviewEntries.forEach(review => { %>
+                                <article class="profile-review-card">
+                                    <a href="/movies/<%= review.movieId %>" class="profile-review-poster-link">
+                                        <img
+                                            src="<%= review.poster %>"
+                                            data-fallback="<%= review.poster %>"
+                                            alt="<%= review.title %>"
+                                            class="profile-review-poster"
+                                        >
+                                    </a>
+                                    <div class="profile-review-copy">
+                                        <div class="profile-review-meta"><%= review.type %> | <%= review.library %></div>
+                                        <a href="/movies/<%= review.movieId %>" class="profile-review-title"><%= review.title %></a>
+                                        <div class="profile-review-stars" aria-label="Rated <%= review.rating %> out of 5 stars">
+                                            <% for (let i = 1; i <= 5; i++) { %>
+                                                <span class="<%= i <= review.rating ? 'filled' : '' %>">&#9733;</span>
+                                            <% } %>
+                                        </div>
+                                        <p class="profile-review-body"><%= review.body %></p>
+                                        <div class="profile-review-date"><%= new Date(review.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></div>
+                                    </div>
+                                </article>
+                            <% }) %>
+                        </div>
+                    <% } else { %>
+                        <p class="profile-empty-copy">You have not reviewed any titles yet. Once you post reviews, they will appear here.</p>
+                    <% } %>
+                </section>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,49 @@
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container-fluid px-4">
+        <!-- Brand Logo -->
+        <a class="navbar-brand" href="/">CINEVERSE</a>
+        
+        <!-- Mobile Toggle Button -->
+        <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <!-- Navbar Links -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="/movies">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/movies#animation-movies">Animation</a></li>
+                <li class="nav-item"><a class="nav-link" href="/movies#tv-series">Series</a></li>
+                <li class="nav-item"><a class="nav-link" href="/movies#bollywood">Bollywood</a></li>
+                <li class="nav-item"><a class="nav-link" href="/movies#south-indian">South Movies</a></li>
+                <li class="nav-item"><a class="nav-link" href="/movies#korean-dramas">K-Dramas</a></li>
+                <li class="nav-item"><a class="nav-link" href="/movies/new">Add Movie</a></li>
+            </ul>
+            
+            <!-- Right Side (Search & Auth) -->
+            <div class="d-flex align-items-center nav-utility">
+                
+                <!-- Search Bar -->
+                <form action="/search" method="GET" class="search-form me-3">
+                    <input class="search-input" type="search" name="q" placeholder="Search titles, cast, directors, genres" aria-label="Search titles, cast, directors, genres">
+                    <button class="search-button" type="submit">Search</button>
+                </form>
+                
+                <!-- Dynamic Auth Buttons -->
+                <% if(!currentUser) { %>
+                    <!-- Shows when NOT logged in -->
+                    <a class="nav-link text-white" href="/login">Login</a>
+                    <a class="btn btn-danger btn-sm ms-3 fw-bold" href="/register">Sign Up</a>
+                <% } else { %>
+                    <!-- Shows when LOGGED IN -->
+                    <a class="profile-nav-link" href="/profile">
+                        <img src="<%= currentUser.profilePicture %>" alt="<%= currentUser.username %>" class="profile-nav-avatar">
+                        <span class="text-white fw-bold">Hi, <%= currentUser.username %></span>
+                    </a>
+                    <a class="btn btn-outline-light btn-sm fw-bold" href="/logout">Logout</a>
+                <% } %>
+                
+            </div>
+        </div>
+    </div>
+</nav>
